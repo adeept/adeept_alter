@@ -11,7 +11,7 @@ As a board designed for computer programming education, Raspberry Pi has lots of
 ### 1.2 About the Documentation 
 This documentation is for software installation and operation guide for the Python robot product. It describes every detail of the whole process of fulfilling the robot project by Python and Raspberry Pi from scratch as well as some precautions. Hope you can get started with the Raspberry Pi robot on Python and make more creations with this documentation.   
 
-##2. Getting to Use the Raspberry Pi
+## 2. Getting to Use the Raspberry Pi
 ### 2.1 Write the Raspberry Pi image to an SD card 
 
 
