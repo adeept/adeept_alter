@@ -3,7 +3,6 @@ A open source robot based on Raspberry Pi
 
 Getting Started with Raspberry Pi Robot and Python 
 ----
-[TOC]
 
 ## 1. Premise
 ### 1.1 STEAM and Raspberry Pi
@@ -373,7 +372,7 @@ There are many ways to connect WiFi for Raspberry Pi. Two methods are provided i
     - <kbd>COLOR</kbd>: Select the color to track.
     - When the function is on, the robot will automatically lock one particular color in the camera view. By default it tracks bright yellow objects. You can change the color as you want. When an object is locked, the LED on the robot will turn orange. As the robot's head can only move up and down, the program does not involve tracking colors horizontally. If you have interest in this part, you may add the motor control based on the openCV section to realize effect.   
 
-##6 Q&A
+## 6 Q&A
 - Where to find the IP address of the Raspberry Pi?
 
     > - Before connecting the Raspberry Pi via SSH, you need to know the IP address of the Raspberry Pi. Check the Management interface for your router, or download the app `Network Scanner` -> search for a device named `RASPBERRY` or `Raspberry Pi Foundation` to get the IP address.  
