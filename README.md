@@ -10,42 +10,6 @@ STEAM stands for Science, Technology, Engineering, Arts and Mathematics. It's a 
 As a board designed for computer programming education, Raspberry Pi has lots of advantages over other robot development boards. Therefore, Raspberry Pi is used for function control of the robot. 
 ### 1.2 About the Documentation 
 This documentation is for software installation and operation guide for the Python robot product. It describes every detail of the whole process of fulfilling the robot project by Python and Raspberry Pi from scratch as well as some precautions. Hope you can get started with the Raspberry Pi robot on Python and make more creations with this documentation.   
-```mermaid
-graph TB
-A[2.1.1 官方工具下载镜像] --> B{树莓派有无外设}
-B --> |有|D[2.2.1 配置SSH]
-D --> F[2.3.1 配置WIFI]
-B --> |无|E[2.2.2 配置SSH]
-E --> G[2.3.2 配置WIFI]
-H[2.1.2 下载软件下载镜像] --> B
-
-
-J[2.1.3 下载我们提供的镜像文件] --> K{树莓派有无外设}
-K --> |有|L[2.3.1 配置WIFI]
-K --> |无|M[2.3.2 配置WIFI]
-
-F --> N{电脑的系统}
-G --> N
-L --> S[4 组装]
-M --> S[4 组装]
-
-N -->|Windows 10|P[3.1 登录树莓派]
-N -->|Linux or Mac|Q[3.2 登录树莓派]
-N -->|Windows|R[3.3 登录树莓派]
-
-P -->T[3.4 下载程序]
-Q -->T
-R -->T
-
-T -->U[3.5 安装程序]
-
-U -->V[3.6 运行程序]
-
-V -->S
-
-S -->W[5 使用WEB应用控制机器人]
-```
-
 
 ## 2. Getting to Use the Raspberry Pi
 ### 2.1 Write the Raspberry Pi image to an SD card 
