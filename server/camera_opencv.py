@@ -1,7 +1,7 @@
 import os
 import cv2
 from base_camera import BaseCamera
-# import RPIservo
+import ultra
 import numpy as np
 import alterMove
 import datetime
@@ -39,6 +39,8 @@ turningCommand   = 'no'
 speedMove = 100
 
 posUD = 0
+
+distanceCheak = 0.6
 
 def posUpDown(command, spd):
     global posUD
@@ -225,7 +227,7 @@ class CVThread(threading.Thread):
                 alter.moveAlter(speedMove, 'no', 'right', 0)
             else:
                 alter.moveAlter(speedMove, 'no', 'no', 0)
-            move.motorStop()
+                alter.moveStop()
             pass
         elif posInput < (setCenter - findLineError):
             #turnLeft
@@ -233,7 +235,7 @@ class CVThread(threading.Thread):
                 alter.moveAlter(speedMove, 'no', 'left', 0)
             else:
                 alter.moveAlter(speedMove, 'no', 'no', 0)
-            move.motorStop()
+                alter.moveStop()
             pass
         else:
             #forward
@@ -321,7 +323,8 @@ class CVThread(threading.Thread):
         while 1:
             self.__flag.wait()
             if self.CVMode == 'none':
-
+                alter.moveStop()
+                self.pause()
                 continue
             elif self.CVMode == 'findColor':
 
@@ -354,6 +357,10 @@ class Camera(BaseCamera):
             Camera.set_video_source(int(os.environ['OPENCV_CAMERA_SOURCE']))
         super(Camera, self).__init__()
 
+    def alterStop(self):
+        alter.moveStop()
+        time.sleep(0.1)
+        alter.moveStop()
 
     def colorFindSet(self, invarH, invarS, invarV):
         global colorUpper, colorLower
@@ -440,9 +447,80 @@ class Camera(BaseCamera):
             yield cv2.imencode('.jpg', img)[1].tobytes()
 
 
+class Functions(threading.Thread):
+
+    def __init__(self, *args, **kwargs):
+        super(Functions, self).__init__(*args, **kwargs)
+        self.__flag = threading.Event()
+        self.__flag.clear()
+        self.funcMode = 'no'
+
+    def pause(self):
+        self.__flag.clear()
+
+    def resume(self):
+        self.__flag.set()
+
+    def keepDProcessing(self):
+        dist = ultra.checkdist()
+
+        if dist < distanceCheak - 0.1:
+            alter.moveAlter(100, 'backward', 'no', 1)
+        elif dist > distanceCheak + 0.1:
+            alter.moveAlter(100, 'forward', 'no', 1)
+        else:
+            alter.moveStop()
+
+        time.sleep(0.1)
+
+
+    def automaticProcessing(self):
+        dist = ultra.checkdist()
+
+        if dist < distanceCheak/2:
+            alter.moveAlter(100, 'no', 'left', 1)
+        else:
+            alter.moveAlter(100, 'forward', 'no', 1)
+
+        time.sleep(0.1)
+
+    def funcProcessing(self):
+        if self.funcMode == 'keepDistance':
+            self.keepDProcessing()
+        elif self.funcMode == 'automatic':
+            self.automaticProcessing()
+
+    def functionSelect(self, funcName):
+        self.funcMode = funcName
+        if self.funcMode == 'no':
+            alter.moveStop()
+            self.pause()
+            alter.moveStop()
+        else:
+            self.resume()
+
+    def run(self):
+        while 1:
+            self.__flag.wait()
+            if self.funcMode == 'no':
+                alter.moveStop()
+                self.pause()
+                alter.moveStop()
+            else:
+                self.funcProcessing()
+                if self.funcMode == 'no':
+                    alter.moveStop()
+                    self.pause()
+                    alter.moveStop()
+
+
+func = Functions()
+func.start()
+
+
 def commandAct(act, inputA):
     global directionCommand, turningCommand, speedMove, posUD
-
+    alterMove.configPWM(act)
     if act == 'forward':
         directionCommand = 'forward'
         alter.moveAlter(speedMove, directionCommand, turningCommand, 0)
@@ -529,32 +607,35 @@ def commandAct(act, inputA):
         alterMove.frontLightCtrl('off')
 
     elif 'trackLine' == act:
+        func.functionSelect('no')
         alter.functionSelect('findline')
 
     elif 'trackLineOff' == act:
         alter.functionSelect('no')
 
     elif 'KD' == act:
-        alter.functionSelect('keepDistance')
+        func.functionSelect('keepDistance')
 
     elif 'automatic' == act:
-        alter.functionSelect('automatic')
+        func.functionSelect('automatic')
 
     elif 'automaticOff' == act:
         alter.functionSelect('no')
+        func.functionSelect('no')
 
     elif 'steadyCamera' == act:
         alter.functionSelect('steady')
+        func.functionSelect('no')
 
     elif 'steadyCameraOff' == act:
         alter.functionSelect('no')
+        func.functionSelect('no')
 
     elif 'police' == act:
         alterMove.startPoliceLight()
 
     elif 'policeOff' == act:
         alterMove.lightStop()
-
 
 
     elif 'Switch_1_on' == act:

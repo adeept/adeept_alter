@@ -8,6 +8,8 @@ import oledCtrl
 import robotLight
 import move as dc
 import RPi.GPIO as GPIO
+import ultra
+import os
 
 dc.setup()
 dc.motorStop()
@@ -29,25 +31,44 @@ pwm.set_pwm_freq(50)
 selectGait = 0
 speedApart = 50
 
-init_pwm0 = 348
-init_pwm1 = 215
-init_pwm2 = 360
-init_pwm3 = 204
+init_pwm0 = 351
+init_pwm1 = 214
+init_pwm2 = 375
+init_pwm3 = 201
 
-init_pwm4 = 255
-init_pwm5 = 390
-init_pwm6 = 240
-init_pwm7 = 399
+init_pwm4 = 250
+init_pwm5 = 398
+init_pwm6 = 245
+init_pwm7 = 394
 
-init_pwm8 = 300
-init_pwm9 = 300
-init_pwm10 = 300
-init_pwm11 = 300
+init_pwm8 = 320
+init_pwm9 = 320
+init_pwm10 = 320
+init_pwm11 = 320
 
 init_pwm12 = 300
 init_pwm13 = 300
 init_pwm14 = 300
 init_pwm15 = 300
+
+
+buffer_8  = []
+buffer_9  = []
+buffer_10 = []
+buffer_11 = []
+
+buffer_8A = 0
+buffer_8B = 0
+
+buffer_9A = 0
+buffer_9B = 0
+
+buffer_10A = 0
+buffer_10B = 0
+
+buffer_11A = 0
+buffer_11B = 0
+
 
 LA = 23.0
 LB = 51.336
@@ -87,6 +108,8 @@ offSetD = 0.0
 
 sinput = 1
 
+distanceCheak = 0.6
+
 '''
 ------
 0   4
@@ -123,6 +146,264 @@ GPIO.setup(line_pin_right,GPIO.IN)
 GPIO.setup(line_pin_middle,GPIO.IN)
 GPIO.setup(line_pin_left,GPIO.IN)
 
+curpath = os.path.realpath(__file__)
+thisPath = "/" + os.path.dirname(curpath)
+
+
+def replace_num(initial,new_num):   #Call this function to replace data in '.txt' file
+    global r
+    newline=""
+    str_num=str(new_num)
+    with open(thisPath+"/alterMove.py","r") as f:
+        for line in f.readlines():
+            if(line.find(initial) == 0):
+                line = initial+"%s" %(str_num+"\n")
+            newline += line
+    with open(thisPath+"/alterMove.py","w") as f:
+        f.writelines(newline)
+
+
+def configPWM(command_input):
+    global  init_pwm0, init_pwm1, init_pwm2, init_pwm3, init_pwm4, init_pwm5, init_pwm6, init_pwm7, init_pwm8, init_pwm9, init_pwm10, init_pwm11, init_pwm12, init_pwm13, init_pwm14, init_pwm15, buffer_8A, buffer_8B, buffer_9A, buffer_9B, buffer_10A, buffer_10B, buffer_11A, buffer_11B
+
+    if 'SiLeft' in command_input:
+        numServo = int(command_input[7:])
+
+        if numServo == 0:
+            init_pwm0 -= 1
+
+        elif numServo == 1:
+            init_pwm1 -= 1
+
+        elif numServo == 2:
+            init_pwm2 -= 1
+
+        elif numServo == 3:
+            init_pwm3 -= 1
+
+
+        elif numServo == 4:
+            init_pwm4 -= 1
+
+        elif numServo == 5:
+            init_pwm5 -= 1
+
+        elif numServo == 6:
+            init_pwm6 -= 1
+
+        elif numServo == 7:
+            init_pwm7 -= 1
+
+
+        elif numServo == 8:
+            init_pwm8 -= 1
+
+        elif numServo == 9:
+            init_pwm9 -= 1
+
+        elif numServo == 10:
+            init_pwm10 -= 1
+
+        elif numServo == 11:
+            init_pwm11 -= 1
+
+
+        elif numServo == 12:
+            init_pwm12 -= 1
+
+        elif numServo == 13:
+            init_pwm13 -= 1
+
+        elif numServo == 14:
+            init_pwm14 -= 1
+
+        elif numServo == 15:
+            init_pwm15 -= 1
+
+        initServos()
+
+
+    if 'SiRight' in command_input:
+        numServo = int(command_input[8:])
+
+        if numServo == 0:
+            init_pwm0 += 1
+
+        elif numServo == 1:
+            init_pwm1 += 1
+
+        elif numServo == 2:
+            init_pwm2 += 1
+
+        elif numServo == 3:
+            init_pwm3 += 1
+
+
+        elif numServo == 4:
+            init_pwm4 += 1
+
+        elif numServo == 5:
+            init_pwm5 += 1
+
+        elif numServo == 6:
+            init_pwm6 += 1
+
+        elif numServo == 7:
+            init_pwm7 += 1
+
+
+        elif numServo == 8:
+            init_pwm8 += 1
+
+        elif numServo == 9:
+            init_pwm9 += 1
+
+        elif numServo == 10:
+            init_pwm10 += 1
+
+        elif numServo == 11:
+            init_pwm11 += 1
+
+
+        elif numServo == 12:
+            init_pwm12 += 1
+
+        elif numServo == 13:
+            init_pwm13 += 1
+
+        elif numServo == 14:
+            init_pwm14 += 1
+
+        elif numServo == 15:
+            init_pwm15 += 1
+
+        initServos()
+
+
+    if 'PWMMS' in command_input:
+        numServo = int(command_input[6:])
+        if numServo == 0:
+            replace_num('init_pwm0 = ' , init_pwm0)
+        elif numServo == 1:
+            replace_num('init_pwm1 = ' , init_pwm1)
+        elif numServo == 2:
+            replace_num('init_pwm2 = ' , init_pwm2)
+        elif numServo == 3:
+            replace_num('init_pwm3 = ' , init_pwm3)
+
+        elif numServo == 4:
+            replace_num('init_pwm4 = ' , init_pwm4)
+        elif numServo == 5:
+            replace_num('init_pwm5 = ' , init_pwm5)
+        elif numServo == 6:
+            replace_num('init_pwm6 = ' , init_pwm6)
+        elif numServo == 7:
+            replace_num('init_pwm7 = ' , init_pwm7)
+
+        elif numServo == 8:
+            if buffer_8A == 0:
+                buffer_8A = init_pwm8
+            elif buffer_8A != 0 and buffer_8B == 0:
+                buffer_8B = init_pwm8
+            elif buffer_8A != 0 and buffer_8B != 0:
+                init_pwm8 = int((buffer_8A + buffer_8B)/2)
+                buffer_8A = 0
+                buffer_8B = 0
+                replace_num('init_pwm8 = ' , init_pwm8)
+                print('servo 8 ++')
+        elif numServo == 9:
+            if buffer_9A == 0:
+                buffer_9A = init_pwm9
+            elif buffer_9A != 0 and buffer_9B == 0:
+                buffer_9B = init_pwm9
+            elif buffer_9A != 0 and buffer_9B != 0:
+                init_pwm9 = int((buffer_9A + buffer_9B)/2)
+                buffer_9A = 0
+                buffer_9B = 0
+                replace_num('init_pwm9 = ' , init_pwm9)
+                print('servo 9 ++')
+        elif numServo == 10:
+            if buffer_10A == 0:
+                buffer_10A = init_pwm10
+            elif buffer_10A != 0 and buffer_10B == 0:
+                buffer_10B = init_pwm10
+            elif buffer_10A != 0 and buffer_10B != 0:
+                init_pwm10 = int((buffer_10A + buffer_10B)/2)
+                buffer_10A = 0
+                buffer_10B = 0
+                replace_num('init_pwm10 = ' , init_pwm10)
+                print('servo 10 ++')
+        elif numServo == 11:
+            if buffer_11A == 0:
+                buffer_11A = init_pwm11
+            elif buffer_11A != 0 and buffer_11B == 0:
+                buffer_11B = init_pwm11
+            elif buffer_11A != 0 and buffer_11B != 0:
+                init_pwm11 = int((buffer_11A + buffer_11B)/2)
+                buffer_11A = 0
+                buffer_11B = 0
+                replace_num('init_pwm11 = ' , init_pwm11)
+                print('servo 11 ++')
+
+        elif numServo == 12:
+            replace_num('init_pwm12 = ', init_pwm12)
+        elif numServo == 13:
+            replace_num('init_pwm13 = ', init_pwm13)
+        elif numServo == 14:
+            replace_num('init_pwm14 = ', init_pwm14)
+        elif numServo == 15:
+            replace_num('init_pwm15 = ', init_pwm15)
+
+        initServos()
+
+
+    if 'PWMINIT' == command_input:
+        initServos()
+
+
+    elif 'PWMD' == command_input:
+        init_pwm0 = 300
+        init_pwm1 = 300
+        init_pwm2 = 300
+        init_pwm3 = 300
+
+        init_pwm4 = 300
+        init_pwm5 = 300
+        init_pwm6 = 300
+        init_pwm7 = 300
+
+        init_pwm8 = 320
+        init_pwm9 = 320
+        init_pwm10 = 320
+        init_pwm11 = 320
+
+        init_pwm12 = 300
+        init_pwm13 = 300
+        init_pwm14 = 300
+        init_pwm15 = 300
+
+        replace_num('init_pwm0 = ' , init_pwm0)
+        replace_num('init_pwm1 = ' , init_pwm1)
+        replace_num('init_pwm2 = ' , init_pwm2)
+        replace_num('init_pwm3 = ' , init_pwm3)
+
+        replace_num('init_pwm4 = ' , init_pwm4)
+        replace_num('init_pwm5 = ' , init_pwm5)
+        replace_num('init_pwm6 = ' , init_pwm6)
+        replace_num('init_pwm7 = ' , init_pwm7)
+
+        replace_num('init_pwm8 = ' , init_pwm8)
+        replace_num('init_pwm9 = ' , init_pwm9)
+        replace_num('init_pwm10 = ', init_pwm10)
+        replace_num('init_pwm11 = ', init_pwm11)
+
+        replace_num('init_pwm12 = ', init_pwm12)
+        replace_num('init_pwm13 = ', init_pwm13)
+        replace_num('init_pwm14 = ', init_pwm14)
+        replace_num('init_pwm15 = ', init_pwm15)
+
+        initServos()
+
 
 def anGen(ani):
     return int(round(((ctrlRangeMax-ctrlRangeMin)/angleRange*ani),0))
@@ -142,6 +423,13 @@ def linkageD(linkageLen, servoNum, goalPosZ): #E
 
 
 def initServos():
+    global initPos
+
+    initPos = [init_pwm0,init_pwm1,init_pwm2,init_pwm3,
+               init_pwm4,init_pwm5,init_pwm6,init_pwm7,
+               init_pwm8,init_pwm9,init_pwm10,init_pwm11,
+               init_pwm12,init_pwm13,init_pwm14,init_pwm15]
+
     for i in range(0,16):
         pwm.set_pwm(i, 0, initPos[i])
 
@@ -645,12 +933,6 @@ class Alter(threading.Thread):
         pwm.set_pwm(11, 0, int(speed_4))
 
         self.classicLastCommand = command
-        print(speed_1)
-        print(speed_3)
-
-
-    def racingMove(self, command):
-        pass
 
 
     def functionSelect(self, funcName):
@@ -679,7 +961,7 @@ class Alter(threading.Thread):
             smove()
 
         self.classicMove(self.commandInput)
-        dc.move(100, self.moveDirection, self.turnDirection, 1)
+        dc.move(self.moveSpeed, self.moveDirection, self.turnDirection, 1)
 
 
     def findlineProcessing(self):
@@ -726,11 +1008,27 @@ class Alter(threading.Thread):
 
 
     def keepDProcessing(self):
-        pass
+        dist = ultra.checkdist()
+
+        if dist < distanceCheak - 0.1:
+            funAlter.moveAlter(100, 'backward', 'no', 1)
+        elif dist > distanceCheak + 0.1:
+            funAlter.moveAlter(100, 'forward', 'no', 1)
+        else:
+            funAlter.moveStop()
+
+        time.sleep(0.1)
 
 
     def automaticProcessing(self):
-        pass
+        dist = ultra.checkdist()
+
+        if dist < distanceCheak/2:
+            funAlter.moveAlter(100, 'no', 'left', 1)
+        else:
+            funAlter.moveAlter(100, 'forward', 'no', 1)
+
+        time.sleep(0.1)
 
 
     def funcProcessing(self):
@@ -738,10 +1036,6 @@ class Alter(threading.Thread):
             self.steadyProcessing()
         elif self.funcMode == 'findline':
             self.findlineProcessing()
-        elif self.funcMode == 'keepDistance':
-            self.keepDProcessing()
-        elif self.funcMode == 'automatic':
-            self.automaticProcessing()
 
 
     def run(self):
@@ -752,12 +1046,13 @@ class Alter(threading.Thread):
                 if self.moveDirection == 'no' and self.turnDirection =='no':
                     self.moveStop()
                     stay(walkHeight)
+                    self.pause()
             else:
                 self.funcProcessing()
                 if self.funcMode == 'no':
                     stay(walkHeight)
                     continue
-            print(self.funcMode)
+            # print(self.funcMode)
             pass
 
 
@@ -800,7 +1095,8 @@ class OLED(threading.Thread):
             pass
 
 
-
+# funAlter = Alter()
+# funAlter.start()
 # pitchRoll(15, 15)
 
 '''

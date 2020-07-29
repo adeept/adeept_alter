@@ -65,6 +65,8 @@ class webapp:
 
     def modeselect(self, modeInput):
         Camera.modeSelect = modeInput
+        if modeInput == 'none':
+            camera.alterStop()
 
     def commandInput(self, inputCommand, valueA=None):
         commandAct(inputCommand, valueA)
