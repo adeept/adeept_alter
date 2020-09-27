@@ -41,10 +41,10 @@ init_pwm5 = 398
 init_pwm6 = 245
 init_pwm7 = 394
 
-init_pwm8 = 320
-init_pwm9 = 320
-init_pwm10 = 320
-init_pwm11 = 320
+init_pwm8 = 317
+init_pwm9 = 317
+init_pwm10 = 316
+init_pwm11 = 318
 
 init_pwm12 = 300
 init_pwm13 = 300
@@ -106,6 +106,8 @@ middleHeight = (maxHeight + minHeight)/2
 
 offSetD = 0.0
 
+mark = 0
+
 sinput = 1
 
 distanceCheak = 0.6
@@ -136,9 +138,9 @@ except:
 kfX = Kalman_filter.Kalman_filter(0.01,0.1)
 kfY = Kalman_filter.Kalman_filter(0.01,0.1)
 
-line_pin_right = 19
+line_pin_left = 19
 line_pin_middle = 16
-line_pin_left = 20
+line_pin_right = 20
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
@@ -787,10 +789,10 @@ class Alter(threading.Thread):
         self.moveDirection = 'no'
         self.turnDirection = 'no'
         self.commandInput  = 'no'
-        self.moveSpeed     = 100
+        self.moveSpeed     = 60
 
         self.accSpeed   = 1
-        self.initSpeed  = 327
+        self.initSpeed  = 317
         self.deltaSpeed = 11
 
         self.funcMode  = 'no'
@@ -987,24 +989,68 @@ class Alter(threading.Thread):
             rightStu = 5
         
         setSome2812(255, 64, 128, [leftStu, middleStu, rightStu])
-        
-        if status_middle == 1 and status_left == 1 and status_right == 1:
-            self.moveStop()
-
-        elif status_middle == 1:
+        global mark
+        if status_left ==0 and status_middle == 1 and status_right ==0:# (0 1 0)
+            if mark !=1:
+                self.classicMove('no')
+                dc.move(80, 'backward', 'no', 1)
+                time.sleep(0.015)
             self.classicMove('forward')
             dc.move(100, 'forward', 'no', 1)
-        elif status_left == 1:
-            self.classicMove('right')
-            dc.move(100, 'no', 'right', 1)
-        elif status_right == 1:
+            mark = 1
+
+        elif status_left ==1 and status_middle == 1 and status_right ==0:# (1 1 0 )
+            if mark !=2:
+                self.classicMove('no')
+                dc.move(80, 'backward', 'no', 1)
+                time.sleep(0.015)
             self.classicMove('left')
             dc.move(100, 'no', 'left', 1)
-        elif status_middle == 0 and status_left == 0 and status_right == 0:
-            self.classicMove('backward')
-            dc.move(100, 'backward', 'no', 1)
+            mark = 2
 
-        time.sleep(0.3)
+        elif status_left ==1 and status_middle == 0 and status_right ==0:#(1 0 0)
+            if mark !=3:
+                self.classicMove('no')
+                dc.move(80, 'backward', 'no', 1)
+                time.sleep(0.03)
+            self.classicMove('left')
+            dc.move(100, 'no', 'left', 1)
+            mark = 3
+
+        elif  status_left ==0 and status_middle == 1 and status_right ==1:# (0 1 1)
+            if mark !=4:
+                self.classicMove('no')
+                dc.move(80, 'backward', 'no', 1)
+                time.sleep(0.015)
+            self.classicMove('right')
+            dc.move(100, 'no', 'right', 1)
+            mark = 4
+
+        elif  status_left ==0 and status_middle == 0 and status_right ==1:# (0 0 1)
+            if mark !=5:
+                self.classicMove('no')
+                dc.move(80, 'backward', 'no', 1)
+                time.sleep(0.03)
+            self.classicMove('right')
+            dc.move(100, 'no', 'right', 1)
+            mark = 5
+
+        else:
+            if mark ==0 :
+                self.classicMove('forward')
+                dc.move(80, 'forward', 'no', 1)
+            elif mark == 1:
+                self.classicMove('forward')
+                dc.move(80, 'forward', 'no', 1)
+            elif mark == 2 or mark == 3:				# (1 0 0)
+                self.classicMove('left')
+                dc.move(80, 'no', 'left', 1)
+            elif mark == 4 or mark == 5:
+                self.classicMove('right')
+                dc.move(100, 'no', 'right', 1)
+
+
+
 
 
     def keepDProcessing(self):
