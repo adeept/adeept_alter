@@ -993,61 +993,61 @@ class Alter(threading.Thread):
         if status_left ==0 and status_middle == 1 and status_right ==0:# (0 1 0)
             if mark !=1:
                 self.classicMove('no')
-                dc.move(80, 'backward', 'no', 1)
-                time.sleep(0.015)
+                # dc.move(60, 'backward', 'no', 1)
+                # time.sleep(0.02)
             self.classicMove('forward')
-            dc.move(100, 'forward', 'no', 1)
+            dc.move(70, 'forward', 'no', 1)
             mark = 1
 
         elif status_left ==1 and status_middle == 1 and status_right ==0:# (1 1 0 )
             if mark !=2:
                 self.classicMove('no')
-                dc.move(80, 'backward', 'no', 1)
-                time.sleep(0.015)
+                # dc.move(60, 'backward', 'no', 1)
+                time.sleep(0.02)
             self.classicMove('left')
-            dc.move(100, 'no', 'left', 1)
+            dc.move(70, 'no', 'left', 1)
             mark = 2
 
         elif status_left ==1 and status_middle == 0 and status_right ==0:#(1 0 0)
             if mark !=3:
                 self.classicMove('no')
-                dc.move(80, 'backward', 'no', 1)
+                # dc.move(60, 'backward', 'no', 1)
                 time.sleep(0.03)
             self.classicMove('left')
-            dc.move(100, 'no', 'left', 1)
+            dc.move(70, 'no', 'left', 1)
             mark = 3
 
         elif  status_left ==0 and status_middle == 1 and status_right ==1:# (0 1 1)
             if mark !=4:
                 self.classicMove('no')
-                dc.move(80, 'backward', 'no', 1)
-                time.sleep(0.015)
+                # dc.move(60, 'backward', 'no', 1)
+                time.sleep(0.02)
             self.classicMove('right')
-            dc.move(100, 'no', 'right', 1)
+            dc.move(70, 'no', 'right', 1)
             mark = 4
 
         elif  status_left ==0 and status_middle == 0 and status_right ==1:# (0 0 1)
             if mark !=5:
                 self.classicMove('no')
-                dc.move(80, 'backward', 'no', 1)
+                # dc.move(60, 'backward', 'no', 1)
                 time.sleep(0.03)
             self.classicMove('right')
-            dc.move(100, 'no', 'right', 1)
+            dc.move(70, 'no', 'right', 1)
             mark = 5
 
         else:
             if mark ==0 :
                 self.classicMove('forward')
-                dc.move(80, 'forward', 'no', 1)
+                dc.move(60, 'forward', 'no', 1)
             elif mark == 1:
                 self.classicMove('forward')
-                dc.move(80, 'forward', 'no', 1)
+                dc.move(60, 'forward', 'no', 1)
             elif mark == 2 or mark == 3:				# (1 0 0)
                 self.classicMove('left')
-                dc.move(80, 'no', 'left', 1)
+                dc.move(60, 'no', 'left', 1)
             elif mark == 4 or mark == 5:
                 self.classicMove('right')
-                dc.move(100, 'no', 'right', 1)
+                dc.move(60, 'no', 'right', 1)
 
 
 
