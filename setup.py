@@ -70,7 +70,7 @@ for x in range(1,4):
 		break
 
 for x in range(1,4):
-	if os.system("sudo pip3 install adafruit_gpio") == 0:
+	if os.system("sudo pip3 install flask") == 0:
 		break
 
 for x in range(1,4):

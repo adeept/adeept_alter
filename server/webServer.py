@@ -52,7 +52,6 @@ async def check_permit(websocket):
             response_str = "sorry, the username or password is wrong, please submit again"
             await websocket.send(response_str)
 
-
 async def recv_msg(websocket):
     while True: 
         response = {
@@ -112,7 +111,6 @@ async def recv_msg(websocket):
 
             elif 'defEC' in data:#Z
                 fpv.defaultExpCom()
-
 
         elif(isinstance(data,dict)):
             if data['title'] == "findColorSet":
