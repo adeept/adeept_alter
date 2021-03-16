@@ -58,3 +58,10 @@ def showText(content, x, y):
 while 1:
 	showLook(LaughImage)
 '''
+if __name__ == '__main__':
+	while 1:
+		showText('123421',0,0)
+		time.sleep(1)
+		disp.clear()
+		disp.display()
+		time.sleep(1)
