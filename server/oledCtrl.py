@@ -14,7 +14,8 @@ import os
 curpath = os.path.realpath(__file__)
 thisPath = "/" + os.path.dirname(curpath)
 
-RST = 24
+# RST = 24
+RST = None
 FPS = 30
 timeDelay = 1/FPS
 imagesNum = 40
