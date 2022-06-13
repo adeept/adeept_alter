@@ -1,6 +1,7 @@
 
 '''
 When the oledPlay.py file runs and reports an error, please run the file.
+Reference: https://github.com/adafruit/Adafruit_CircuitPython_SSD1306/blob/main/examples/ssd1306_pillow_image_display.py
 '''
 #!/usr/bin/python3
 import time
