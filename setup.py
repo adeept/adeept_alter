@@ -80,6 +80,10 @@ for x in range(1,4):
 for x in range(1,4):
 	if os.system("sudo pip3 install websockets") == 0:
 		break
+	
+for x in range(1,4):
+	if os.system("sudo pip install --upgrade Adafruit_BBIO") == 0:
+		break
 
 try:
 	replace_num("/boot/config.txt",'#dtparam=i2c_arm=on','dtparam=i2c_arm=on,i2c_baudrate=1000000\nstart_x=1\ndtoverlay=pi3-miniuart-bt')
